@@ -1,0 +1,20 @@
+section {
+  border: 1px solid red;
+  width: 400px;
+}
+section h1 {
+  text-align: center;
+}
+section div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+}
+section div .item {
+  width: 33%;
+  height: 100px;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=style.css.map */
