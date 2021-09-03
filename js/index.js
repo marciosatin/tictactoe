@@ -1,8 +1,8 @@
 const PLAYER_XIS = 'xis'
 const PLAYER_BALL = 'ball'
-const COL_A = 'a'
-const COL_B = 'b'
-const COL_C = 'c'
+const ROW_A = 'a'
+const ROW_B = 'b'
+const ROW_C = 'c'
 
 let container = document.querySelector('section')
 let template = document.getElementById('item')
@@ -10,7 +10,7 @@ let template = document.getElementById('item')
 let createRow = () => document.createElement('div')
 
 let row = createRow()
-let rowLable = COL_A
+let rowLable = ROW_A
 let colLable = 1
 
 let player = PLAYER_XIS
@@ -146,7 +146,7 @@ for (let i = 1; i <= 9; i++) {
         row = createRow()
 
         colLable = 1
-        rowLable = (rowLable === COL_A) ? COL_B : COL_C
+        rowLable = (rowLable === ROW_A) ? ROW_B : ROW_C
     }
 
 }
