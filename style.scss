@@ -5,17 +5,19 @@ section {
   h1 {
       text-align: center;
   }
-  
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid black;
-    
-    .item {
-      width: 33%;
-      height: 100px;
-      cursor: pointer;
+
+  div#board {
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid black;
+      
+      .item {
+        width: 33%;
+        height: 100px;
+        cursor: pointer;
+      }
     }
   }
 }

@@ -5,13 +5,13 @@ section {
 section h1 {
   text-align: center;
 }
-section div {
+section div#board div {
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid black;
 }
-section div .item {
+section div#board div .item {
   width: 33%;
   height: 100px;
   cursor: pointer;

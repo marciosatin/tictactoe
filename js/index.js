@@ -4,7 +4,7 @@ const ROW_A = 'a'
 const ROW_B = 'b'
 const ROW_C = 'c'
 
-let container = document.querySelector('section')
+let container = document.querySelector('section div#board')
 let template = document.getElementById('item')
 
 let createRow = () => document.createElement('div')
@@ -35,7 +35,7 @@ const isAllDifferent = handleUsed => {
         verifier[item]++
     }
 
-    let foundEquals = false 
+    let foundEquals = false
     for (const index of Object.keys(verifier)) {
         if (verifier[index] === 1) {
             continue
@@ -73,6 +73,7 @@ const isWinner = (gameData) => {
 
     if (winner) {
         console.log('WINNER::::', gameData.lastMove.player);
+        resetGame()
     }
 
     return winner;
@@ -125,28 +126,52 @@ const itemClick = (e) => {
 
 }
 
-for (let i = 1; i <= 9; i++) {
+const renderView = () => {
 
-    let itemClone = template.content.firstElementChild.cloneNode(true)
+    for (let i = 1; i <= 9; i++) {
 
-    itemClone.dataset.col = colLable++
-    itemClone.dataset.row = rowLable
+        let itemClone = template.content.firstElementChild.cloneNode(true)
 
-    let identifierBlock = rowLable + itemClone.dataset.col
+        itemClone.dataset.col = colLable++
+        itemClone.dataset.row = rowLable
 
-    itemClone.className = 'item ' + identifierBlock
-    itemClone.innerText = identifierBlock
+        let identifierBlock = rowLable + itemClone.dataset.col
 
-    itemClone.addEventListener('click', itemClick)
-    row.append(itemClone)
+        itemClone.className = 'item ' + identifierBlock
+        itemClone.innerText = identifierBlock
 
-    if (i % 3 === 0) {
-        container.append(row)
-        row.innerHtml = ''
-        row = createRow()
+        itemClone.addEventListener('click', itemClick)
+        row.append(itemClone)
 
-        colLable = 1
-        rowLable = (rowLable === ROW_A) ? ROW_B : ROW_C
+        if (i % 3 === 0) {
+            container.append(row)
+            row.innerHtml = ''
+            row = createRow()
+
+            colLable = 1
+            rowLable = (rowLable === ROW_A) ? ROW_B : ROW_C
+        }
+
     }
 
 }
+
+const resetGame = () => {
+    rowLable = ROW_A
+    colLable = 1
+
+    player = PLAYER_XIS
+    gameData = {
+        xis: [],
+        ball: [],
+        usedPositions: [],
+        lastMove: {
+            player: null,
+            position: null
+        }
+    }
+    container.innerHTML = ''
+    renderView()
+}
+
+renderView()
