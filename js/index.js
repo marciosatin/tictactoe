@@ -24,28 +24,76 @@ let gameData = {
     }
 }
 
-const isAllEquals = handleUsed => handleUsed.every((value, i, arr) => value === arr[0])
-const isAllDifferent = handleUsed => {
-    let verifier = {}
-    for (const item of handleUsed) {
-        if (!verifier[item]) {
-            verifier[item] = 1
+const isDiagonalWinner = (playerColsUsed, playerRowsUsed) => {
+    let colsGroup = {}
+    let rowsGroup = {}
+    const notDiagonal = ['a2', 'b1', 'b3', 'c2']
+
+    for (let i = 0; i < playerColsUsed.length; i++) {
+        const col = playerColsUsed[i]
+        if (!colsGroup[col]) {
+            colsGroup[col] = 1
             continue
         }
-        verifier[item]++
+        colsGroup[col]++
+    }
+    for (let i = 0; i < playerRowsUsed.length; i++) {
+        const row = playerRowsUsed[i]
+        if (!rowsGroup[row]) {
+            rowsGroup[row] = 1
+            continue
+        }
+        rowsGroup[row]++
     }
 
-    let foundEquals = false
-    for (const index of Object.keys(verifier)) {
-        if (verifier[index] === 1) {
+    const colsDifferent = Object.keys(colsGroup)
+    const rowsDifferent = Object.keys(rowsGroup)
+
+    if (colsDifferent.length == 3 && rowsDifferent.length == 3) {
+        for (let i = 0; i < colsDifferent.length; i++) {
+            const col = colsDifferent[i]
+            for (let i = 0; i < rowsDifferent.length; i++) {
+                const row = rowsDifferent[i]
+                const rowCol = row + col
+                if (notDiagonal.every(item => item == rowCol)) {
+                    return false
+                }
+            }
+        }
+
+        return true
+    }
+
+    return false
+}
+
+const atLeastThreeOccurrences = (handleUsed) => {
+    let itemsEqual = {}
+    for (let i = 0; i < handleUsed.length; i++) {
+        const item = handleUsed[i]
+        if (!itemsEqual[item]) {
+            itemsEqual[item] = 1
             continue
         }
-        foundEquals = true
+        itemsEqual[item]++
     }
-    if (foundEquals) {
-        return false
+
+    for (const key in itemsEqual) {
+        if (Object.hasOwnProperty.call(itemsEqual, key)) {
+            const value = itemsEqual[key];
+            if (value == 3) {
+                return true
+            }
+
+        }
     }
-    return true
+
+    return false
+
+}
+
+const isThreeEquals = handleUsed => {
+    return atLeastThreeOccurrences(handleUsed)
 }
 
 const isWinner = (gameData) => {
@@ -56,24 +104,27 @@ const isWinner = (gameData) => {
     const playerColsUsed = playerMoves.map(item => item.col);
     const playerRowsUsed = playerMoves.map(item => item.row);
 
-    //Possui 3 linhas e colunas diferentes
-    if (isAllDifferent(playerColsUsed) && isAllDifferent(playerRowsUsed)) {
+    //Possui pelo menos 3 linhas iguais
+    if (isThreeEquals(playerRowsUsed)) {
         winner = true
+        console.log('Possui 3 linhas iguais');
     }
 
-    //Possui 3 colunas iguais e 3 linhas diferentes
-    if (isAllEquals(playerColsUsed) && isAllDifferent(playerRowsUsed)) {
+    //Possui pelo menos 3 colunas iguais
+    if (isThreeEquals(playerColsUsed)) {
         winner = true
+        console.log('Possui 3 colunas iguais');
     }
 
-    //Possui 3 linhas iguais e 3 colunas diferentes
-    if (isAllEquals(playerRowsUsed) && isAllDifferent(playerColsUsed)) {
+    //Possui pelo menos 3 colunas e linhas diferentes formando diagonal
+    if (isDiagonalWinner(playerColsUsed, playerRowsUsed)) {
         winner = true
+        console.log('Possui 3 colunas e linhas diferentes formando diagonal');
     }
 
     if (winner) {
         console.log('WINNER::::', gameData.lastMove.player);
-        resetGame()
+        // resetGame()
     }
 
     return winner;
