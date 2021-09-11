@@ -24,46 +24,22 @@ let gameData = {
     }
 }
 
-const isDiagonalWinner = (playerColsUsed, playerRowsUsed) => {
-    let colsGroup = {}
-    let rowsGroup = {}
-    const notDiagonal = ['a2', 'b1', 'b3', 'c2']
-
-    for (let i = 0; i < playerColsUsed.length; i++) {
-        const col = playerColsUsed[i]
-        if (!colsGroup[col]) {
-            colsGroup[col] = 1
-            continue
+const isDiagonalWinner = (playerMoves) => {
+    let diagonalUm = 0
+    let diagonalDois = 0
+    for (let i = 0; i < playerMoves.length; i++) {
+        const move = playerMoves[i]
+        const rowCol = move.row + move.col
+        if (rowCol == 'a1' || rowCol == 'b2' || rowCol == 'c3') {
+            diagonalUm++
         }
-        colsGroup[col]++
+        if (rowCol == 'c1' || rowCol == 'b2' || rowCol == 'a3') {
+            diagonalDois++
+        }
     }
-    for (let i = 0; i < playerRowsUsed.length; i++) {
-        const row = playerRowsUsed[i]
-        if (!rowsGroup[row]) {
-            rowsGroup[row] = 1
-            continue
-        }
-        rowsGroup[row]++
-    }
-
-    const colsDifferent = Object.keys(colsGroup)
-    const rowsDifferent = Object.keys(rowsGroup)
-
-    if (colsDifferent.length == 3 && rowsDifferent.length == 3) {
-        for (let i = 0; i < colsDifferent.length; i++) {
-            const col = colsDifferent[i]
-            for (let i = 0; i < rowsDifferent.length; i++) {
-                const row = rowsDifferent[i]
-                const rowCol = row + col
-                if (notDiagonal.every(item => item == rowCol)) {
-                    return false
-                }
-            }
-        }
-
+    if (diagonalUm == 3 || diagonalDois == 3) {
         return true
     }
-
     return false
 }
 
@@ -104,22 +80,22 @@ const isWinner = (gameData) => {
     const playerColsUsed = playerMoves.map(item => item.col);
     const playerRowsUsed = playerMoves.map(item => item.row);
 
-    //Possui pelo menos 3 linhas iguais
+    //Completou linha
     if (isThreeEquals(playerRowsUsed)) {
         winner = true
-        console.log('Possui 3 linhas iguais');
+        console.log('Possui 3 em linha');
     }
 
-    //Possui pelo menos 3 colunas iguais
+    //Completou coluna
     if (isThreeEquals(playerColsUsed)) {
         winner = true
-        console.log('Possui 3 colunas iguais');
+        console.log('Possui 3 em coluna');
     }
 
     //Possui pelo menos 3 colunas e linhas diferentes formando diagonal
-    if (isDiagonalWinner(playerColsUsed, playerRowsUsed)) {
+    if (isDiagonalWinner(playerMoves)) {
         winner = true
-        console.log('Possui 3 colunas e linhas diferentes formando diagonal');
+        console.log('Possui 3 em coluna e linha diferentes formando diagonal');
     }
 
     if (winner) {
