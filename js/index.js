@@ -13,7 +13,10 @@ let row = createRow()
 let rowLable = ROW_A
 let colLable = 1
 
-let player = PLAYER_XIS
+let player = new Player({
+    type: PLAYER_XIS
+})
+
 let gameData = {
     xis: [],
     ball: [],
@@ -25,19 +28,21 @@ let gameData = {
 }
 
 const isDiagonalWinner = (playerMoves) => {
-    let diagonalUm = 0
-    let diagonalDois = 0
+    let diagonalOne = 0
+    let diagonalTwo = 0
+    const positionsDiagonalOne = ['a1', 'b2', 'c3']
+    const positionsDiagonalTwo = ['c1', 'b2', 'a3']
     for (let i = 0; i < playerMoves.length; i++) {
         const move = playerMoves[i]
         const rowCol = move.row + move.col
-        if (rowCol == 'a1' || rowCol == 'b2' || rowCol == 'c3') {
-            diagonalUm++
+        if (positionsDiagonalOne.find(item => item == rowCol)) {
+            diagonalOne++
         }
-        if (rowCol == 'c1' || rowCol == 'b2' || rowCol == 'a3') {
-            diagonalDois++
+        if (positionsDiagonalTwo.find(item => item == rowCol)) {
+            diagonalTwo++
         }
     }
-    if (diagonalUm == 3 || diagonalDois == 3) {
+    if (diagonalOne == 3 || diagonalTwo == 3) {
         return true
     }
     return false
@@ -72,13 +77,15 @@ const isThreeEquals = handleUsed => {
     return atLeastThreeOccurrences(handleUsed)
 }
 
-const isWinner = (gameData) => {
+const isWinner = (playerMoves) => {
 
     let winner = false;
 
-    const playerMoves = gameData[gameData.lastMove.player];
     const playerColsUsed = playerMoves.map(item => item.col);
     const playerRowsUsed = playerMoves.map(item => item.row);
+
+    console.log('playerColsUsed', playerColsUsed);
+    console.log('playerRowsUsed', playerRowsUsed);
 
     //Completou linha
     if (isThreeEquals(playerRowsUsed)) {
@@ -98,17 +105,12 @@ const isWinner = (gameData) => {
         console.log('Possui 3 em coluna e linha diferentes formando diagonal');
     }
 
-    if (winner) {
-        console.log('WINNER::::', gameData.lastMove.player);
-        // resetGame()
-    }
-
     return winner;
 }
 
 const setPlayerLabel = (player, positionId) => {
     let elementItem = document.querySelector('div.item.' + positionId)
-    elementItem.innerText = (player === PLAYER_XIS) ? 'X' : 'O'
+    elementItem.innerText = (player.type === PLAYER_XIS) ? 'X' : 'O'
 }
 
 const itemClick = (e) => {
@@ -123,11 +125,13 @@ const itemClick = (e) => {
     }
 
     gameData.usedPositions.push(gameData.lastMove.position);
-    gameData[player].push({
-        player: player,
+    gameData[player.type].push({
+        player: player.type,
         row: e.target.dataset.row,
         col: e.target.dataset.col
     })
+
+    const playerMoves = gameData[player.type]
 
     setPlayerLabel(player, gameData.lastMove.position)
 
@@ -139,17 +143,18 @@ const itemClick = (e) => {
     *******************
     *******************/
 
-    player = (player === PLAYER_XIS) ? PLAYER_BALL : PLAYER_XIS
-
     if (gameData.usedPositions.length > 4) {
-        if (isWinner(gameData)) {
-            // alert('Winner is: ' + gameData.lastMove.player)
-            // window.location.reload()
+        if (isWinner(playerMoves)) {
+            alert('Winner is: ' + gameData.lastMove.player.type)
+            resetGame()
+            return
         }
     }
     if (gameData.usedPositions.length === 9) {
         console.log('=== EMPATE ===')
     }
+
+    player.type = (player.type === PLAYER_XIS) ? PLAYER_BALL : PLAYER_XIS
 
 }
 
@@ -187,7 +192,9 @@ const resetGame = () => {
     rowLable = ROW_A
     colLable = 1
 
-    player = PLAYER_XIS
+    player = new Player({
+        type: PLAYER_XIS
+    })
     gameData = {
         xis: [],
         ball: [],
